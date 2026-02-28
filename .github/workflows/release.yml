@@ -1,0 +1,84 @@
+name: Create Plugin Release
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Detect plugin slug
+        id: plugin_slug
+        run: |
+          # Find main plugin file with "Plugin Name:" header
+          MAIN_FILE=$(grep -rl "Plugin Name:" --include="*.php" . | head -1)
+          
+          if [ -z "$MAIN_FILE" ]; then
+            echo "Error: No plugin file found with 'Plugin Name:' header"
+            exit 1
+          fi
+          
+          # Get slug from filename
+          SLUG=$(basename "$MAIN_FILE" .php)
+          
+          # Alternative: Get slug from Text Domain if present
+          TEXT_DOMAIN=$(grep "Text Domain:" "$MAIN_FILE" | sed 's/.*Text Domain: *\([^ ]*\).*/\1/' | tr -d '\r')
+          
+          if [ ! -z "$TEXT_DOMAIN" ]; then
+            SLUG="$TEXT_DOMAIN"
+          fi
+          
+          echo "Plugin slug detected: $SLUG"
+          echo "Main file: $MAIN_FILE"
+          
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "main_file=$MAIN_FILE" >> $GITHUB_OUTPUT
+      
+      - name: Create properly named plugin directory
+        run: |
+          SLUG="${{ steps.plugin_slug.outputs.slug }}"
+          mkdir -p "/tmp/$SLUG"
+          
+          # Copy all files except git/github/node_modules
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.gitignore' \
+            --exclude='.gitattributes' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            ./ "/tmp/$SLUG/"
+      
+      - name: Create ZIP file
+        run: |
+          SLUG="${{ steps.plugin_slug.outputs.slug }}"
+          cd /tmp
+          zip -r "$SLUG.zip" "$SLUG"
+          mv "$SLUG.zip" "$GITHUB_WORKSPACE/"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ steps.plugin_slug.outputs.slug }}.zip
+          generate_release_notes: false
+          body: "Plugin release ${{ github.ref_name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload artifact (for manual workflow runs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.plugin_slug.outputs.slug }}
+          path: ${{ steps.plugin_slug.outputs.slug }}.zip

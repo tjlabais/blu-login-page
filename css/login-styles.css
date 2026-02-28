@@ -1,0 +1,133 @@
+:root {
+    --login-primary: #A33542;
+    --login-primary-hover: #730210;
+    --login-bg: #F2F2F2;
+    --login-form-bg: #ffffff;
+    --login-text: #3c4858;
+    --login-border: #e1e8ed;
+    --login-link: #888888;
+    --login-link-hover: #f0f0f0;
+    --login-error: #e74c3c;
+    --login-error-bg: #ffeaea;
+    --login-error-text: #c0392b;
+    --login-message-border: #c3c4c7;
+}
+
+
+body.login {
+    background: var(--login-bg);
+}
+
+#login h1 a {
+    background-image: url('/wp-content/uploads/custom-logo.png');
+    background-size: contain;
+    width: 200px;
+    height: 80px;
+}
+
+.login form {
+    background: var(--login-form-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 26px 24px;
+}
+
+.login label {
+    color: var(--login-text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+    border: 2px solid var(--login-border);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.login input[type="text"]:focus,
+.login input[type="password"]:focus {
+    border-color: var(--login-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.login .dashicons {
+    color: var(--login-text);
+}
+
+.login .wp-hide-pw {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.login .wp-hide-pw:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.wp-core-ui .button-primary {
+    background: var(--login-primary);
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.wp-core-ui .button-primary:hover {
+    background: var(--login-primary-hover);
+}
+
+#backtoblog, #nav, .privacy-policy-page-link {
+    display: none;
+}
+
+.custom-lost-password {
+    text-align: center;
+    margin-top: 16px;
+    padding: 0 24px;
+}
+
+.custom-lost-password a {
+    color: var(--login-link);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.custom-lost-password a:hover {
+    color: var(--login-primary);
+}
+
+#backtoblog a:hover,
+#nav a:hover {
+    color: var(--login-link-hover) !important;
+}
+
+.login .message,
+.login .success {
+    border: 1px solid var(--login-message-border);
+    color: var(--login-text);
+    background: var(--login-form-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);    
+    font-size: 16px;
+}
+
+.login #login_error {
+    border-left: 4px solid var(--login-error);
+    background: var(--login-error-bg);
+    color: var(--login-error-text);
+}
+
+.login-heading {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--login-text);
+    margin: 0 0 24px 0;
+}
